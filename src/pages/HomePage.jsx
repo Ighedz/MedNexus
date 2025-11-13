@@ -15,21 +15,16 @@ const HomePage = () => {
   const [results, setResults] = useState([]);
   const [suggestions, setSuggestions] = useState([]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-
-  // Feedback form state
   const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
 
-  // 🔍 Filter results when "Search" is clicked
   const handleSearch = () => {
     const q = query.trim().toLowerCase();
     const loc = location.trim().toLowerCase();
-
     if (!q && !loc) {
       setResults([]);
       setDropdownOpen(false);
       return;
     }
-
     const filtered = drugs.filter((item) => {
       const matchesDrug =
         item.drug.toLowerCase().includes(q) ||
@@ -39,19 +34,17 @@ const HomePage = () => {
         : true;
       return matchesDrug && matchesLocation;
     });
-
     setResults(filtered.length > 0 ? filtered : "no-results");
     setDropdownOpen(true);
   };
 
-  // 🧠 Live suggestions while typing
   useEffect(() => {
     const q = query.trim().toLowerCase();
     if (q.length > 0) {
       const filtered = drugs
         .filter((item) => item.drug.toLowerCase().includes(q))
         .map((item) => item.drug);
-      setSuggestions([...new Set(filtered)]); // remove duplicates
+      setSuggestions([...new Set(filtered)]);
     } else {
       setSuggestions([]);
     }
@@ -105,7 +98,27 @@ const HomePage = () => {
       <PharmacyCTA />
       <Testimonials />
 
-      {/* FEEDBACK / IDEA VALIDATION */}
+      {/* Hidden Netlify form for detection */}
+      <form
+        name="mednexus-feedback"
+        data-netlify="true"
+        netlify-honeypot="bot-field"
+        hidden
+      >
+        <input type="hidden" name="form-name" value="mednexus-feedback" />
+        <input type="text" name="features" />
+        <input type="text" name="usage" />
+        <input type="text" name="preferredSolutions" />
+        <select name="wouldUse">
+          <option>Yes</option>
+          <option>Maybe</option>
+          <option>No</option>
+        </select>
+        <input type="text" name="contact" />
+        <input type="hidden" name="bot-field" />
+      </form>
+
+      {/* FEEDBACK FORM */}
       <section className="bg-blue-50 py-12 px-4 sm:px-6 lg:px-20 rounded-xl shadow-lg mt-12">
         <h2 className="text-2xl sm:text-3xl font-semibold mb-6 text-center">
           Help Us Improve MedNexus
@@ -124,7 +137,11 @@ const HomePage = () => {
                 method: "POST",
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
                 body: new URLSearchParams(new FormData(form)).toString(),
-              }).then(() => setFeedbackSubmitted(true));
+              })
+                .then(() => setFeedbackSubmitted(true))
+                .catch((err) =>
+                  console.error("Form submission failed:", err)
+                );
             }}
             className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6"
           >
