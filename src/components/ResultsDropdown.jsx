@@ -1,37 +1,16 @@
 import React, { useState } from "react";
 import { X, MapPin } from "lucide-react";
 import UnifiedModal from "./UnifiedModal";
-import UserLoginModal from "./UserLoginModal";
-import UserRegisterModal from "./UserRegisterModal";
 
 const ResultsDropdown = ({ results, visible, onClose, query }) => {
   const [selectedDrug, setSelectedDrug] = useState(null);
-  const [showRegister, setShowRegister] = useState(false);
-  const [showLogin, setShowLogin] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   if (!visible) return null;
 
   const safeResults = Array.isArray(results) ? results : [];
 
   const handleView = (drug) => {
-    if (!isLoggedIn) {
-      setShowRegister(true);
-      setSelectedDrug(drug);
-    } else {
-      setSelectedDrug(drug);
-    }
-  };
-
-  const handleLoginSuccess = () => {
-    setIsLoggedIn(true);
-    setShowLogin(false);
-    setShowRegister(false);
-  };
-
-  const handleRegisterSuccess = () => {
-    setIsLoggedIn(true);
-    setShowRegister(false);
+    setSelectedDrug(drug);
   };
 
   return (
@@ -84,28 +63,8 @@ const ResultsDropdown = ({ results, visible, onClose, query }) => {
         )}
       </div>
 
-      {/* Register Modal */}
-      {showRegister && (
-        <UserRegisterModal
-          onClose={() => setShowRegister(false)}
-          onLogin={() => {
-            setShowRegister(false);
-            setShowLogin(true);
-          }}
-          onRegisterSuccess={handleRegisterSuccess}
-        />
-      )}
-
-      {/* Login Modal */}
-      {showLogin && (
-        <UserLoginModal
-          onClose={() => setShowLogin(false)}
-          onLogin={handleLoginSuccess}
-        />
-      )}
-
-      {/* Unified Modal (after login/registration) */}
-      {selectedDrug && isLoggedIn && (
+      {/* Unified Modal */}
+      {selectedDrug && (
         <UnifiedModal drug={selectedDrug} onClose={() => setSelectedDrug(null)} />
       )}
     </>

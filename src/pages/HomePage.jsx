@@ -1,3 +1,4 @@
+// src/pages/HomePage.jsx
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import SearchBar from "../components/SearchBar";
@@ -8,12 +9,15 @@ import PharmacyCTA from "../components/PharmacyCTA";
 import Testimonials from "../components/Testimonials";
 import { drugs } from "../mockData";
 
-const HomePage = ({ darkMode }) => {
+const HomePage = () => {
   const [query, setQuery] = useState("");
   const [location, setLocation] = useState("");
   const [results, setResults] = useState([]);
   const [suggestions, setSuggestions] = useState([]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  // Feedback form state
+  const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
 
   // 🔍 Filter results when "Search" is clicked
   const handleSearch = () => {
@@ -54,12 +58,8 @@ const HomePage = ({ darkMode }) => {
   }, [query]);
 
   return (
-    <div
-      className={`min-h-screen flex flex-col transition-colors duration-500 ${
-        darkMode ? "bg-gray-900 text-gray-100" : "bg-gray-50 text-gray-900"
-      }`}
-    >
-      <Navbar darkMode={darkMode} />
+    <div className="min-h-screen flex flex-col bg-gray-50 text-gray-900">
+      <Navbar />
 
       {/* HERO */}
       <section className="flex flex-col items-center justify-center text-center px-4 sm:px-6 md:px-12 lg:px-20 pt-32 sm:pt-36 md:pt-44">
@@ -98,15 +98,120 @@ const HomePage = ({ darkMode }) => {
           visible={dropdownOpen}
           onClose={() => setDropdownOpen(false)}
           query={query}
-          darkMode={darkMode}
         />
       </div>
 
-      <HowItWorks darkMode={darkMode} />
-      <PharmacyCTA darkMode={darkMode} />
-      <Testimonials darkMode={darkMode} />
+      <HowItWorks />
+      <PharmacyCTA />
+      <Testimonials />
 
-      <footer className="py-10 text-center text-sm text-gray-500 bg-gray-100 dark:bg-gray-800 mt-auto">
+      {/* FEEDBACK / IDEA VALIDATION */}
+      <section className="bg-blue-50 py-16 px-6 sm:px-12 lg:px-20 mt-10 rounded-xl shadow-md">
+        <h2 className="text-2xl font-semibold mb-6 text-center">
+          Help Us Improve MedNexus
+        </h2>
+
+        {!feedbackSubmitted ? (
+          <form
+            name="mednexus-feedback"
+            method="POST"
+            data-netlify="true"
+            onSubmit={(e) => {
+              e.preventDefault();
+              const form = e.target;
+              fetch("/", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: new URLSearchParams(new FormData(form)).toString(),
+              }).then(() => setFeedbackSubmitted(true));
+            }}
+            className="max-w-2xl mx-auto space-y-4"
+          >
+            <input type="hidden" name="form-name" value="mednexus-feedback" />
+
+            <div>
+              <label className="block mb-1 font-medium">
+                What features would you use or like to see?
+              </label>
+              <textarea
+                name="features"
+                rows={3}
+                className="w-full border rounded-lg p-2 outline-none"
+                placeholder="E.g., price comparison, drug availability, prescription upload"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block mb-1 font-medium">
+                How would you use MedNexus?
+              </label>
+              <textarea
+                name="usage"
+                rows={3}
+                className="w-full border rounded-lg p-2 outline-none"
+                placeholder="E.g., checking nearby pharmacy stock, ordering drugs"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block mb-1 font-medium">
+                What solutions would you prefer for these problems?
+              </label>
+              <textarea
+                name="preferredSolutions"
+                rows={3}
+                className="w-full border rounded-lg p-2 outline-none"
+                placeholder="E.g., real-time stock updates, chat with pharmacist"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block mb-1 font-medium">
+                Would you use MedNexus if launched for both users and pharmacies?
+              </label>
+              <select
+                name="wouldUse"
+                className="w-full border rounded-lg p-2 outline-none"
+              >
+                <option value="Yes">Yes</option>
+                <option value="Maybe">Maybe</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block mb-1 font-medium">
+                Email or phone (optional, for updates)
+              </label>
+              <input
+                type="text"
+                name="contact"
+                className="w-full border rounded-lg p-2 outline-none"
+                placeholder="example@email.com or 08012345678"
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
+            >
+              Submit Feedback
+            </button>
+          </form>
+        ) : (
+          <div className="max-w-2xl mx-auto text-center bg-green-100 border border-green-400 text-green-700 rounded-lg p-6">
+            <h3 className="text-xl font-semibold mb-2">Thank you for your feedback!</h3>
+            <p>
+              We appreciate your input. The MedNexus team will review your suggestions and may reach out via email or phone.
+            </p>
+          </div>
+        )}
+      </section>
+
+      <footer className="py-10 text-center text-sm text-gray-500 bg-gray-100 mt-auto">
         © {new Date().getFullYear()} MedNexus. All rights reserved.
       </footer>
     </div>

@@ -1,11 +1,21 @@
+// src/components/UnifiedModal.jsx
 import React, { useState, useEffect } from "react";
-import { X, Upload, MessageSquare, CheckCircle, MapPin, Phone } from "lucide-react";
+import {
+  X,
+  Upload,
+  MessageSquare,
+  CheckCircle,
+  MapPin,
+  Phone,
+} from "lucide-react";
+import UserDetailsModal from "./UserDetailsModal";
 
 const UnifiedModal = ({ drug, onClose }) => {
-  const [step, setStep] = useState("view"); // 'view' | 'prescription' | 'complete'
+  const [step, setStep] = useState("view"); // 'view' | 'prescription' | 'userDetails' | 'complete'
   const [file, setFile] = useState(null);
   const [comment, setComment] = useState("");
   const [quantity, setQuantity] = useState(1);
+  const [userDetails, setUserDetails] = useState(null);
 
   useEffect(() => {
     if (drug?.requiresPrescription) setStep("prescription");
@@ -18,11 +28,23 @@ const UnifiedModal = ({ drug, onClose }) => {
 
   const handleFileChange = (e) => setFile(e.target.files[0]);
   const handleSubmitPrescription = () => setStep("complete");
-  const handleOrderClick = () => setStep("complete");
+
+  const handleOrderClick = () => {
+    // for non-prescription drugs, go to user details form
+    setStep("userDetails");
+  };
+
+  const handleUserDetailsComplete = (details) => {
+    setUserDetails(details);
+    setStep("complete");
+  };
 
   const openMap = () => {
     const query = encodeURIComponent(`${drug.pharmacy}, ${drug.location}`);
-    window.open(`https://www.google.com/maps/search/?api=1&query=${query}`, "_blank");
+    window.open(
+      `https://www.google.com/maps/search/?api=1&query=${query}`,
+      "_blank"
+    );
   };
 
   return (
@@ -36,7 +58,7 @@ const UnifiedModal = ({ drug, onClose }) => {
           <X size={22} />
         </button>
 
-        {/* Product or Prescription Info */}
+        {/* ======================= STEP 1: VIEW PRODUCT INFO ======================= */}
         {(step === "view" || step === "prescription") && (
           <>
             <div className="flex flex-col items-center mb-4">
@@ -50,7 +72,9 @@ const UnifiedModal = ({ drug, onClose }) => {
               </h2>
               <p className="text-sm text-gray-500">
                 {drug.category} —{" "}
-                {drug.requiresPrescription ? "Prescription Drug" : "Over-the-Counter"}
+                {drug.requiresPrescription
+                  ? "Prescription Drug"
+                  : "Over-the-Counter"}
               </p>
             </div>
 
@@ -63,11 +87,13 @@ const UnifiedModal = ({ drug, onClose }) => {
               </p>
               <p className="text-sm text-gray-600">Pack Size: {drug.packSize}</p>
               {drug.expiry && (
-                <p className="text-sm text-gray-600">Expiry Date: {drug.expiry}</p>
+                <p className="text-sm text-gray-600">
+                  Expiry Date: {drug.expiry}
+                </p>
               )}
             </div>
 
-            {/* Only show order options for non-prescription */}
+            {/* Non-prescription flow */}
             {!drug.requiresPrescription && (
               <>
                 <div className="flex items-center justify-between mb-4">
@@ -146,7 +172,9 @@ const UnifiedModal = ({ drug, onClose }) => {
                 </div>
 
                 {/* OR Divider */}
-                <div className="text-center text-gray-400 font-medium">----- OR -----</div>
+                <div className="text-center text-gray-400 font-medium">
+                  ----- OR -----
+                </div>
 
                 {/* Chat & Contact */}
                 <div className="flex flex-col items-center gap-2">
@@ -170,7 +198,15 @@ const UnifiedModal = ({ drug, onClose }) => {
           </>
         )}
 
-        {/* Order Completion View */}
+        {/* ======================= STEP 2: USER DETAILS FORM ======================= */}
+        {step === "userDetails" && (
+          <UserDetailsModal
+            onClose={onClose}
+            onComplete={handleUserDetailsComplete}
+          />
+        )}
+
+        {/* ======================= STEP 3: ORDER COMPLETION ======================= */}
         {step === "complete" && (
           <div className="text-center">
             <CheckCircle
@@ -178,13 +214,32 @@ const UnifiedModal = ({ drug, onClose }) => {
               className="text-green-500 mx-auto mb-4 animate-bounce"
             />
             <h3 className="text-lg font-semibold mb-2">Order Placed!</h3>
-            <p className="text-gray-600 mb-4">
-              Your order for <strong>{drug.name || drug.drug}</strong> has been
-              successfully placed. The pharmacy will reach out via call or text.
-            </p>
-            <p className="text-gray-800 font-medium mb-6">
+
+            {userDetails ? (
+              <>
+                <p className="text-gray-600 mb-2">
+                  <strong>{userDetails.name}</strong>, your order for{" "}
+                  <strong>{drug.name || drug.drug}</strong> has been placed
+                  successfully.
+                </p>
+                <p className="text-gray-600">
+                  The pharmacy will reach out via call or text at{" "}
+                  <strong>{userDetails.phone}</strong>.
+                </p>
+                <p className="text-gray-600 mt-2">
+                  Delivery Address: {userDetails.address}
+                </p>
+              </>
+            ) : (
+              <p className="text-gray-600 mb-2">
+                Your prescription has been successfully submitted.
+              </p>
+            )}
+
+            <p className="text-gray-800 font-medium my-4">
               Total: ₦{total?.toLocaleString?.() ?? total}
             </p>
+
             <button
               onClick={onClose}
               className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700"
