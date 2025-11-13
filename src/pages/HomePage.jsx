@@ -106,8 +106,8 @@ const HomePage = () => {
       <Testimonials />
 
       {/* FEEDBACK / IDEA VALIDATION */}
-      <section className="bg-blue-50 py-16 px-6 sm:px-12 lg:px-20 mt-10 rounded-xl shadow-md">
-        <h2 className="text-2xl font-semibold mb-6 text-center">
+      <section className="bg-blue-50 py-12 px-4 sm:px-6 lg:px-20 rounded-xl shadow-lg mt-12">
+        <h2 className="text-2xl sm:text-3xl font-semibold mb-6 text-center">
           Help Us Improve MedNexus
         </h2>
 
@@ -116,6 +116,7 @@ const HomePage = () => {
             name="mednexus-feedback"
             method="POST"
             data-netlify="true"
+            netlify-honeypot="bot-field"
             onSubmit={(e) => {
               e.preventDefault();
               const form = e.target;
@@ -125,88 +126,79 @@ const HomePage = () => {
                 body: new URLSearchParams(new FormData(form)).toString(),
               }).then(() => setFeedbackSubmitted(true));
             }}
-            className="max-w-2xl mx-auto space-y-4"
+            className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6"
           >
             <input type="hidden" name="form-name" value="mednexus-feedback" />
+            <input type="hidden" name="bot-field" />
 
             <div>
-              <label className="block mb-1 font-medium">
-                What features would you use or like to see?
-              </label>
+              <label className="block mb-1 font-medium">Features you'd like:</label>
               <textarea
                 name="features"
                 rows={3}
-                className="w-full border rounded-lg p-2 outline-none"
-                placeholder="E.g., price comparison, drug availability, prescription upload"
+                className="w-full border rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-400"
+                placeholder="E.g., price comparison, drug availability"
                 required
               />
             </div>
 
             <div>
-              <label className="block mb-1 font-medium">
-                How would you use MedNexus?
-              </label>
+              <label className="block mb-1 font-medium">How would you use MedNexus?</label>
               <textarea
                 name="usage"
                 rows={3}
-                className="w-full border rounded-lg p-2 outline-none"
-                placeholder="E.g., checking nearby pharmacy stock, ordering drugs"
+                className="w-full border rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-400"
+                placeholder="E.g., checking nearby pharmacy stock"
                 required
               />
             </div>
 
             <div>
-              <label className="block mb-1 font-medium">
-                What solutions would you prefer for these problems?
-              </label>
+              <label className="block mb-1 font-medium">Preferred solutions:</label>
               <textarea
                 name="preferredSolutions"
                 rows={3}
-                className="w-full border rounded-lg p-2 outline-none"
-                placeholder="E.g., real-time stock updates, chat with pharmacist"
+                className="w-full border rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-400"
+                placeholder="E.g., real-time stock updates"
                 required
               />
             </div>
 
             <div>
-              <label className="block mb-1 font-medium">
-                Would you use MedNexus if launched for both users and pharmacies?
-              </label>
+              <label className="block mb-1 font-medium">Would you use MedNexus?</label>
               <select
                 name="wouldUse"
-                className="w-full border rounded-lg p-2 outline-none"
+                className="w-full border rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-400"
               >
-                <option value="Yes">Yes</option>
-                <option value="Maybe">Maybe</option>
-                <option value="No">No</option>
+                <option>Yes</option>
+                <option>Maybe</option>
+                <option>No</option>
               </select>
             </div>
 
-            <div>
-              <label className="block mb-1 font-medium">
-                Email or phone (optional, for updates)
-              </label>
+            <div className="md:col-span-2">
+              <label className="block mb-1 font-medium">Email or phone (optional):</label>
               <input
                 type="text"
                 name="contact"
-                className="w-full border rounded-lg p-2 outline-none"
+                className="w-full border rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-400"
                 placeholder="example@email.com or 08012345678"
               />
             </div>
 
-            <button
-              type="submit"
-              className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
-            >
-              Submit Feedback
-            </button>
+            <div className="md:col-span-2">
+              <button
+                type="submit"
+                className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition"
+              >
+                Submit Feedback
+              </button>
+            </div>
           </form>
         ) : (
-          <div className="max-w-2xl mx-auto text-center bg-green-100 border border-green-400 text-green-700 rounded-lg p-6">
+          <div className="max-w-3xl mx-auto text-center bg-green-100 border border-green-400 text-green-700 rounded-lg p-6">
             <h3 className="text-xl font-semibold mb-2">Thank you for your feedback!</h3>
-            <p>
-              We appreciate your input. The MedNexus team will review your suggestions and may reach out via email or phone.
-            </p>
+            <p>We appreciate your input and may reach out via email or phone.</p>
           </div>
         )}
       </section>
