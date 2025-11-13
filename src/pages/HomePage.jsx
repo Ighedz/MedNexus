@@ -15,7 +15,6 @@ const HomePage = () => {
   const [results, setResults] = useState([]);
   const [suggestions, setSuggestions] = useState([]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
 
   const handleSearch = () => {
     const q = query.trim().toLowerCase();
@@ -98,126 +97,24 @@ const HomePage = () => {
       <PharmacyCTA />
       <Testimonials />
 
-      {/* Hidden Netlify form for detection */}
-      <form
-        name="mednexus-feedback"
-        data-netlify="true"
-        netlify-honeypot="bot-field"
-        hidden
-      >
-        <input type="hidden" name="form-name" value="mednexus-feedback" />
-        <input type="text" name="features" />
-        <input type="text" name="usage" />
-        <input type="text" name="preferredSolutions" />
-        <select name="wouldUse">
-          <option>Yes</option>
-          <option>Maybe</option>
-          <option>No</option>
-        </select>
-        <input type="text" name="contact" />
-        <input type="hidden" name="bot-field" />
-      </form>
-
-      {/* FEEDBACK FORM */}
-      <section className="bg-blue-50 py-12 px-4 sm:px-6 lg:px-20 rounded-xl shadow-lg mt-12">
-        <h2 className="text-2xl sm:text-3xl font-semibold mb-6 text-center">
+      {/* GOOGLE FORM FEEDBACK LINK */}
+      <section className="bg-blue-50 py-12 px-4 sm:px-6 lg:px-20 rounded-xl shadow-lg mt-12 text-center">
+        <h2 className="text-2xl sm:text-3xl font-semibold mb-6">
           Help Us Improve MedNexus
         </h2>
 
-        {!feedbackSubmitted ? (
-          <form
-            name="mednexus-feedback"
-            method="POST"
-            data-netlify="true"
-            netlify-honeypot="bot-field"
-            onSubmit={(e) => {
-              e.preventDefault();
-              const form = e.target;
-              fetch("/", {
-                method: "POST",
-                headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                body: new URLSearchParams(new FormData(form)).toString(),
-              })
-                .then(() => setFeedbackSubmitted(true))
-                .catch((err) =>
-                  console.error("Form submission failed:", err)
-                );
-            }}
-            className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6"
-          >
-            <input type="hidden" name="form-name" value="mednexus-feedback" />
-            <input type="hidden" name="bot-field" />
+        <p className="mb-6 text-gray-700">
+          Share your ideas and suggestions to help us make MedNexus better!
+        </p>
 
-            <div>
-              <label className="block mb-1 font-medium">Features you'd like:</label>
-              <textarea
-                name="features"
-                rows={3}
-                className="w-full border rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-400"
-                placeholder="E.g., price comparison, drug availability"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block mb-1 font-medium">How would you use MedNexus?</label>
-              <textarea
-                name="usage"
-                rows={3}
-                className="w-full border rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-400"
-                placeholder="E.g., checking nearby pharmacy stock"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block mb-1 font-medium">Preferred solutions:</label>
-              <textarea
-                name="preferredSolutions"
-                rows={3}
-                className="w-full border rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-400"
-                placeholder="E.g., real-time stock updates"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block mb-1 font-medium">Would you use MedNexus?</label>
-              <select
-                name="wouldUse"
-                className="w-full border rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-400"
-              >
-                <option>Yes</option>
-                <option>Maybe</option>
-                <option>No</option>
-              </select>
-            </div>
-
-            <div className="md:col-span-2">
-              <label className="block mb-1 font-medium">Email or phone (optional):</label>
-              <input
-                type="text"
-                name="contact"
-                className="w-full border rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-400"
-                placeholder="example@email.com or 08012345678"
-              />
-            </div>
-
-            <div className="md:col-span-2">
-              <button
-                type="submit"
-                className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition"
-              >
-                Submit Feedback
-              </button>
-            </div>
-          </form>
-        ) : (
-          <div className="max-w-3xl mx-auto text-center bg-green-100 border border-green-400 text-green-700 rounded-lg p-6">
-            <h3 className="text-xl font-semibold mb-2">Thank you for your feedback!</h3>
-            <p>We appreciate your input and may reach out via email or phone.</p>
-          </div>
-        )}
+        <a
+          href="https://docs.google.com/forms/d/e/1FAIpQLSc3y-4ZM47p4lQRfswRkwvdtIFsjArK-ncgrsbiiCMVBLkN8Q/viewform?usp=dialog"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-block bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition"
+        >
+          Give Feedback
+        </a>
       </section>
 
       <footer className="py-10 text-center text-sm text-gray-500 bg-gray-100 mt-auto">
