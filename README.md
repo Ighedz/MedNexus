@@ -1,5 +1,6 @@
 🩺 MedNexus
 
+Frontend live demo link : [mednexusng.netlify.app](https://mednexusng.netlify.app/)
 
 MedNexus bridges the gap between patients and pharmacies — helping users find,compare prices, order, or visit locations to purchase medications easily and securely.
 
