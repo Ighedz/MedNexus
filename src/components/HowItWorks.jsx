@@ -22,7 +22,7 @@ const steps = [
 
 const HowItWorks = ({ darkMode }) => {
   return (
-    <section className="py-20 px-4 sm:px-8 md:px-20 text-center">
+    <section  id="how-it-works" className="py-20 px-4 sm:px-8 md:px-20 text-center">
       <motion.h2
         className="text-2xl sm:text-3xl md:text-4xl font-semibold mb-12"
         initial={{ opacity: 0 }}

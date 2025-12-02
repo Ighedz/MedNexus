@@ -10,6 +10,7 @@ const PharmacyCTA = ({ darkMode }) => {
 
   return (
     <section
+     id="for-pharmacies"
       className={`py-20 sm:py-24 px-4 sm:px-8 md:px-12 lg:px-20 text-center transition-colors duration-500 ${
         darkMode ? "bg-gray-800 text-gray-100" : "bg-green-50 text-gray-900"
       }`}
